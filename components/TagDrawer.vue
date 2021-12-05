@@ -50,6 +50,7 @@
 import { computed, defineComponent, PropType, useRouter } from '@nuxtjs/composition-api'
 import { TagInfo } from '~/models/tag'
 import { TagLink } from '~/models/tag-link'
+import { BookmarkItem } from '~/models/bookmark-item'
 
 export default defineComponent({
   props: {
@@ -59,6 +60,10 @@ export default defineComponent({
     },
     tagInfos: {
       type: Array as PropType<Array<TagInfo>>,
+      default: () => [],
+    },
+    bookmarkItems: {
+      type: Array as PropType<Array<BookmarkItem>>,
       default: () => [],
     }
   },
@@ -73,7 +78,7 @@ export default defineComponent({
       const links: Array<TagLink> = [{
         name: 'タグ指定無し',
         link: '/',
-        count: prop.tagInfos.reduce((p, c) => p + c.tagNumber, 0),
+        count: prop.bookmarkItems.length
       }]
       const addLink = prop.tagInfos.map(tagInfo => ({
         name: tagInfo.name,

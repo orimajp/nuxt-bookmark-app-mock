@@ -3,6 +3,7 @@
     <tag-drawer
       v-model='drawer'
       :tag-infos='tagInfos'
+      :bookmark-items="bookmarks"
     />
     <navbar>
       <v-app-bar-nav-icon @click='drawer = !drawer'></v-app-bar-nav-icon>
@@ -182,6 +183,7 @@ export default defineComponent({
       drawer,
       filteredBookmark,
       noBookmarks,
+      ...toRefs(bookmarkState),
       ...toRefs(tagInfoState),
       searchTagsMessage,
       goBookmarkCreatePage,
