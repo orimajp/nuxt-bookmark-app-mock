@@ -8,6 +8,7 @@
   >
     <div style='padding: 0 16px'>
       <v-text-field
+        v-model="searchString"
         placeholder='tag search'
         clearable
       />
@@ -47,7 +48,7 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, PropType, useRouter } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref, useRouter, watch } from "@nuxtjs/composition-api";
 import { TagInfo } from '~/models/tag'
 import { TagLink } from '~/models/tag-link'
 import { BookmarkItem } from '~/models/bookmark-item'
@@ -70,23 +71,40 @@ export default defineComponent({
   setup(prop, { emit }) {
     const router = useRouter()
 
+    const searchString = ref<string | null>('')
+
     const drawer = computed({
       get: () => prop.value,
       set: (val) => emit('input', val)
     })
+    const filteredTags = computed(() => {
+      if (searchString.value === '' || searchString.value === null) {
+        return prop.tagInfos
+      } else {
+        return prop.tagInfos
+          .filter(tagInfo => tagInfo.name.includes(searchString.value as string))
+      }
+      })
     const tagLinks = computed(() => {
       const links: Array<TagLink> = [{
         name: 'タグ指定無し',
         link: '/',
         count: prop.bookmarkItems.length
       }]
-      const addLink = prop.tagInfos.map(tagInfo => ({
+      const addLink = filteredTags.value.map(tagInfo => ({
         name: tagInfo.name,
         link: `/?tag=${encodeURIComponent(tagInfo.name)}`,
         count: tagInfo.tagNumber,
       }))
       return links.concat(addLink)
     })
+
+    watch(
+      () => searchString.value,
+      (newVal) => {
+        console.log('searchString', newVal)
+      }
+    )
 
     const goTagLink = (link: string) => {
       router.push(link)
@@ -97,6 +115,7 @@ export default defineComponent({
     }
 
     return {
+      searchString,
       drawer,
       tagLinks,
       goTagLink,

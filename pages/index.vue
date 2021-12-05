@@ -90,7 +90,7 @@ export default defineComponent({
       getTagInfoListApi,
     } = useBookmarkApi()
 
-    const searchString = ref('')
+    const searchString = ref<string | null>('')
     const drawer = ref(false)
     const bookmarkState = reactive({
       bookmarks: [] as Array<BookmarkItem>
@@ -104,11 +104,11 @@ export default defineComponent({
 
     const query = computed(() => route.value.query)
     const filteredBookmark = computed(() => {
-      if (searchString.value === '') {
+      if (searchString.value === '' || searchString.value === null) {
         return bookmarkState.bookmarks
       } else {
         return bookmarkState.bookmarks
-          .filter(bookmark => bookmark.title.includes(searchString.value))
+          .filter(bookmark => bookmark.title.includes(searchString.value as string))
       }
     })
     const noBookmarks = computed(() => filteredBookmark.value.length === 0)
