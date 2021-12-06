@@ -4,6 +4,7 @@ import { GetBookmarkListRequest } from '~/models/api/get-bookmark-list-request'
 import { GetTagInfoListResponse } from '~/models/api/get-tag-info-list-response'
 import { BookmarkEditItem, BookmarkItem, BookmarkRegisterItem, BookmarkUpdateItem } from '~/models/bookmark-item'
 import { Tag } from '~/models/tag'
+import { GetTotalBookmarkNumberResponse } from "~/models/api/get-total-bookmark-number-response";
 
 export const useBookmarkApi = () => {
 
@@ -25,6 +26,16 @@ export const useBookmarkApi = () => {
       resolve({
         lists: bookmarks
       })
+    })
+  }
+
+  const getTotalBookmarkNumber = (userId: string): Promise<GetTotalBookmarkNumberResponse> => {
+    return new Promise<GetTotalBookmarkNumberResponse>(resolve => {
+      const bookmarks = getBookmarkList([], userId)
+      const result: GetTotalBookmarkNumberResponse = {
+        bookmarkNumbers: bookmarks.length
+      }
+      resolve(result)
     })
   }
 
@@ -81,6 +92,7 @@ export const useBookmarkApi = () => {
 
   return {
     getBookmarkListApi,
+    getTotalBookmarkNumber,
     getBookmarkApi,
     getBookmarkForEditApi,
     getTagInfoListApi,

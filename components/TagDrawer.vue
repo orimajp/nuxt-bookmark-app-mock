@@ -66,7 +66,11 @@ export default defineComponent({
     bookmarkItems: {
       type: Array as PropType<Array<BookmarkItem>>,
       default: () => [],
-    }
+    },
+    totalBookmarkNumber: {
+      type: Number,
+      default: 0,
+    },
   },
   setup(prop, { emit }) {
     const router = useRouter()
@@ -89,7 +93,7 @@ export default defineComponent({
       const links: Array<TagLink> = [{
         name: 'タグ指定無し',
         link: '/',
-        count: prop.bookmarkItems.length
+        count: prop.totalBookmarkNumber,
       }]
       const addLink = filteredTags.value.map(tagInfo => ({
         name: tagInfo.name,

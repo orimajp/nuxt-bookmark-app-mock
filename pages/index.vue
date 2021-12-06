@@ -4,6 +4,7 @@
       v-model='drawer'
       :tag-infos='tagInfos'
       :bookmark-items="bookmarks"
+      :total-bookmark-number="totalBookmarkNumber"
     />
     <navbar>
       <v-app-bar-nav-icon @click='drawer = !drawer'></v-app-bar-nav-icon>
@@ -87,11 +88,13 @@ export default defineComponent({
     const { title } = useMeta()
     const {
       getBookmarkListApi,
+      getTotalBookmarkNumber,
       getTagInfoListApi,
     } = useBookmarkApi()
 
     const searchString = ref<string | null>('')
     const drawer = ref(false)
+    const totalBookmarkNumber = ref(0)
     const bookmarkState = reactive({
       bookmarks: [] as Array<BookmarkItem>
     })
@@ -140,6 +143,8 @@ export default defineComponent({
     )
 
     const { fetch, } = useFetch(async () => {
+      const result = await getTotalBookmarkNumber('1')
+      totalBookmarkNumber.value = result.bookmarkNumbers
       const tags: Array<string> = route.value.query.tag
         ? Array.isArray(route.value.query.tag)
           ? route.value.query.tag as Array<string>
@@ -180,6 +185,7 @@ export default defineComponent({
 
     return {
       searchString,
+      totalBookmarkNumber,
       drawer,
       filteredBookmark,
       noBookmarks,
