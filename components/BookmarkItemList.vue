@@ -35,6 +35,16 @@
                 x-small
                 @click='addTag(tag)'
               >
+                <v-avatar
+                  left
+                  style="margin-left: -6px; margin-right: 0; min-width: 12px; width: 12px;"
+                >
+                  <v-icon
+                    x-small
+                    class="check-icon"
+                    v-text="matchTagIcon(tag)"
+                  />
+                </v-avatar>
                 {{ tag }}
               </v-chip>
             </v-chip-group>
@@ -66,8 +76,12 @@ export default defineComponent({
       type: Array as PropType<Array<BookmarkItem>>,
       default: () => []
     },
+    searchingTags: {
+      type: Array as PropType <Array<string>>,
+      default: () => [],
+    },
   },
-  setup(_, { emit }) {
+  setup(prop, { emit }) {
     const router = useRouter()
 
     const goBookmarkPage = (url: string) => {
@@ -78,9 +92,15 @@ export default defineComponent({
       emit('addTag', tag)
     }
 
+    const matchTagIcon = (tag: string): string => {
+      return prop.searchingTags.includes(tag)
+        ? 'mdi-checkbox-marked-circle' : 'mdi-checkbox-blank-circle'
+    }
+
     return {
       goBookmarkPage,
       addTag,
+      matchTagIcon,
     }
   }
 })
@@ -100,5 +120,13 @@ export default defineComponent({
 .no-tags {
   font-size: 10px;
   padding: 9px 0;
+}
+.check-icon {
+  width: 12px;
+  /*
+  margin-left: -12px;
+  margin-right: -12px;
+
+   */
 }
 </style>

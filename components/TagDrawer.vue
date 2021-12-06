@@ -22,10 +22,19 @@
         :key='tagLink.name'
         class='list-item-content'
       >
-        <v-list-item-content>
+        <v-list-item-icon
+          style="margin-right: 3px;"
+        >
+          <v-icon
+            small
+            v-text="tagLink.icon"
+          />
+        </v-list-item-icon>
+        <v-list-item-content
+          @click='addTag(tagLink.tag)'
+        >
           <v-list-item-title
             class='item-link'
-            @click='addTag(tagLink.tag)'
           >
             {{ tagLink.name }} ({{ tagLink.count }})
           </v-list-item-title>
@@ -48,7 +57,7 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, PropType, ref, useRouter, watch } from "@nuxtjs/composition-api";
+import { computed, defineComponent, PropType, reactive, ref, toRefs, useRouter, watch } from "@nuxtjs/composition-api";
 import { TagInfo } from '~/models/tag'
 import { TagLink } from '~/models/tag-link'
 import { BookmarkItem } from '~/models/bookmark-item'
@@ -71,11 +80,19 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    searchingTags: {
+      type: Array as PropType <Array<string>>,
+      default: () => [] as Array<string>,
+    },
   },
   setup(prop, { emit }) {
     const router = useRouter()
 
     const searchString = ref<string | null>('')
+
+    const tagLinksState = reactive({
+      tagLinks: [] as Array<TagLink>
+    })
 
     const drawer = computed({
       get: () => prop.value,
@@ -89,19 +106,27 @@ export default defineComponent({
           .filter(tagInfo => tagInfo.name.includes(searchString.value as string))
       }
       })
-    const tagLinks = computed(() => {
-      const tags: Array<TagLink> = [{
-        name: 'タグ指定無し',
-        tag: '',
-        count: prop.totalBookmarkNumber,
-      }]
-      const addTags = filteredTags.value.map(tagInfo => ({
-        name: tagInfo.name,
-        tag: tagInfo.name,
-        count: tagInfo.tagNumber,
-      }))
-      return tags.concat(addTags)
-    })
+
+    watch(
+      () => [filteredTags.value , prop.searchingTags],
+      ([newFilteredTags, newSearchingTags]) => {
+        const tags: Array<TagLink> = [{
+          name: 'タグ指定無し',
+          tag: '',
+          icon: newSearchingTags.length
+            ? 'mdi-checkbox-blank-circle' : 'mdi-checkbox-marked-circle',
+          count: prop.totalBookmarkNumber,
+        }]
+        const addTags = (newFilteredTags as Array<TagInfo>).map(tagInfo => ({
+          name: tagInfo.name,
+          tag: tagInfo.name,
+          icon: (newSearchingTags as Array<string>).includes(tagInfo.name)
+            ? 'mdi-checkbox-marked-circle' : 'mdi-checkbox-blank-circle',
+          count: tagInfo.tagNumber,
+        }))
+        tagLinksState.tagLinks = tags.concat(addTags)
+      }
+    )
 
     watch(
       () => searchString.value,
@@ -125,7 +150,7 @@ export default defineComponent({
     return {
       searchString,
       drawer,
-      tagLinks,
+      ...toRefs(tagLinksState),
       addTag,
       goTagListPage,
     }

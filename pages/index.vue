@@ -5,6 +5,7 @@
       :tag-infos='tagInfos'
       :bookmark-items="bookmarks"
       :total-bookmark-number="totalBookmarkNumber"
+      :searching-tags="searchingTags"
       @addTag="addTag"
     />
     <navbar>
@@ -36,6 +37,7 @@
           <v-card-text>
             <bookmark-item-list
               :bookmarks='filteredBookmark'
+              :searching-tags="searchingTags"
               @addTag='addTag'
             />
           </v-card-text>
@@ -192,6 +194,7 @@ export default defineComponent({
       noBookmarks,
       ...toRefs(bookmarkState),
       ...toRefs(tagInfoState),
+      ...toRefs(searchingTagState),
       searchTagsMessage,
       goBookmarkCreatePage,
       addTag,
