@@ -1,5 +1,5 @@
 export interface TagLink {
   name: string
-  link: string
+  tag: string
   count: number
 }

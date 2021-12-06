@@ -25,7 +25,7 @@
         <v-list-item-content>
           <v-list-item-title
             class='item-link'
-            @click='goTagLink(tagLink.link)'
+            @click='addTag(tagLink.tag)'
           >
             {{ tagLink.name }} ({{ tagLink.count }})
           </v-list-item-title>
@@ -90,17 +90,17 @@ export default defineComponent({
       }
       })
     const tagLinks = computed(() => {
-      const links: Array<TagLink> = [{
+      const tags: Array<TagLink> = [{
         name: 'タグ指定無し',
-        link: '/',
+        tag: '',
         count: prop.totalBookmarkNumber,
       }]
-      const addLink = filteredTags.value.map(tagInfo => ({
+      const addTags = filteredTags.value.map(tagInfo => ({
         name: tagInfo.name,
-        link: `/?tag=${encodeURIComponent(tagInfo.name)}`,
+        tag: tagInfo.name,
         count: tagInfo.tagNumber,
       }))
-      return links.concat(addLink)
+      return tags.concat(addTags)
     })
 
     watch(
@@ -110,8 +110,12 @@ export default defineComponent({
       }
     )
 
-    const goTagLink = (link: string) => {
-      router.push(link)
+    const addTag = (tag: string) => {
+      if (tag === '') {
+        router.push('/')
+      } else {
+        emit('addTag', tag)
+      }
     }
 
     const goTagListPage = () => {
@@ -122,7 +126,7 @@ export default defineComponent({
       searchString,
       drawer,
       tagLinks,
-      goTagLink,
+      addTag,
       goTagListPage,
     }
   }

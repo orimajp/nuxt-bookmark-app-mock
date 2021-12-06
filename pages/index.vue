@@ -5,6 +5,7 @@
       :tag-infos='tagInfos'
       :bookmark-items="bookmarks"
       :total-bookmark-number="totalBookmarkNumber"
+      @addTag="addTag"
     />
     <navbar>
       <v-app-bar-nav-icon @click='drawer = !drawer'></v-app-bar-nav-icon>
