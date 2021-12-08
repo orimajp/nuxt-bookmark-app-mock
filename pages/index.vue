@@ -171,18 +171,40 @@ export default defineComponent({
     const addTag = (tag: string) => {
       let tags: Array<string> = []
       const currentTags = query.value.tag
+      console.log(currentTags)
+
       if (Array.isArray(currentTags)) {
-        tags = tags.concat(currentTags as Array<string>)
+        console.log('1')
+        const stringTags = currentTags as Array<string>
+        if (stringTags.includes(tag)) {
+          tags = stringTags.filter(stringTag => stringTag !== tag)
+        } else {
+          tags = tags.concat(stringTags)
+//          tags = stringTags
+          tags.push(tag)
+        }
       } else if (currentTags) {
-        tags.push(currentTags)
+        console.log('2')
+        if (tag !== currentTags) {
+          tags.push(currentTags)
+          tags.push(tag)
+        }
       } else {
+        console.log('3')
         tags.push(tag)
       }
-      if (query.value.tag && !query.value.tag.includes(tag)) {
-        tags.push(tag)
-      }
+
+      console.log('tags', tags)
+
+
       const params = tags.map(tag => `tag=${encodeURIComponent(tag)}` ).join('&')
+
+      console.log('params', params)
+
       const tagQuery = params.length ? '?' + params : ''
+
+      console.log('tagQuery', tagQuery)
+
       router.push(`/${tagQuery}`)
     }
 
