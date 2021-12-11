@@ -258,7 +258,7 @@ export default defineComponent({
 
 <style>
 .tags-input .tags-input-badge {
-  font-size: 90%;
+  font-size: 16px;
 }
 .tags-input-wrapper-default {
   width: 100%;
