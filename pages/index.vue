@@ -110,7 +110,7 @@ export default defineComponent({
 
     const query = computed(() => route.value.query)
     const filteredBookmark = computed(() => {
-      if (searchString.value === '' || searchString.value === null) {
+      if (!searchString.value || searchString.value === '') {
         return bookmarkState.bookmarks
       } else {
         return bookmarkState.bookmarks

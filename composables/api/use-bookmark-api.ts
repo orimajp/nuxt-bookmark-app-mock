@@ -17,6 +17,7 @@ export const useBookmarkApi = () => {
     updateBookmark,
     deleteBookmark,
     updateTag,
+    deleteTag,
   } = useDummyStore()
 
   const getBookmarkListApi = (params: GetBookmarkListRequest): Promise<GetBookmarkListResponse> => {
@@ -84,9 +85,16 @@ export const useBookmarkApi = () => {
   }
 
   const updateTagApi = (tag: Tag): Promise<boolean> => {
-    return new Promise<boolean>(resolve => {
+    return new Promise(resolve => {
       const result = updateTag(tag)
       resolve(result)
+    })
+  }
+
+  const deleteTagApi = (deleteTagId: string, userId: string): Promise<void> => {
+    return new Promise(resolve => {
+      deleteTag(deleteTagId, userId)
+      resolve()
     })
   }
 
@@ -100,5 +108,6 @@ export const useBookmarkApi = () => {
     updateBookmarkApi,
     deleteBookmarkApi,
     updateTagApi,
+    deleteTagApi,
   }
 }

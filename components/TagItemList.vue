@@ -11,10 +11,20 @@
         </td>
         <td style='text-align: right; padding-right: 6px;'>
           <v-btn
-            color='primary'
+            icon
+            @click="executeTagDelete(tagInfo.id, tagInfo.name, tagInfo.tagNumber)"
+          >
+            <v-icon>
+              mdi-delete
+            </v-icon>
+          </v-btn>
+          <v-btn
+            icon
             @click='executeTagEdit(tagInfo.id, tagInfo.name)'
           >
-            編集
+            <v-icon>
+              mdi-pencil
+            </v-icon>
           </v-btn>
         </td>
       </tr>
@@ -39,8 +49,13 @@ export default defineComponent({
       emit('executeTagEdit', { tagId, tagName })
     }
 
+    const executeTagDelete = (tagId: string, tagName: string, tagNumber: number) => {
+      emit('executeTagDelete', { tagId, tagName, tagNumber })
+    }
+
     return {
       executeTagEdit,
+      executeTagDelete,
     }
   }
 })

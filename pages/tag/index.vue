@@ -18,16 +18,25 @@
         <tag-item-list
           :tag-infos='filteredTagInfos'
           @executeTagEdit='openTagEditModal'
+          @executeTagDelete='openTagDeleteModal'
         />
       </v-card-text>
     </v-card>
     <tag-edit-dialog
-      v-model='modal'
+      v-model='editModal'
       :user-id='userId'
       :tag-id='tagId'
       :tag-name='tagName'
       :tag-infos='tagInfos'
-      @competeTagUpdate='competeTagUpdate'
+      @competeTagUpdate='refreshTagList'
+    />
+    <tag-delete-dialog
+      v-model='deleteModal'
+      :user-id='userId'
+      :tag-id='tagId'
+      :tag-name='tagName'
+      :tag-number="tagNumber"
+      @completeDeleteTag="refreshTagList"
     />
   </div>
 </template>
@@ -38,9 +47,10 @@ import { TagInfo } from '~/models/tag'
 import TagItemList from '~/components/TagItemList.vue'
 import { useBookmarkApi } from '~/composables/api/use-bookmark-api'
 import TagEditDialog from '~/components/TagEditDialog.vue'
+import TagDeleteDialog from "~/components/TagDeleteDialog.vue";
 
 export default defineComponent({
-  components: { TagEditDialog, TagItemList },
+  components: { TagDeleteDialog, TagEditDialog, TagItemList },
   setup() {
     const { title } = useMeta()
     const {
@@ -52,14 +62,16 @@ export default defineComponent({
     const tagInfosState = reactive({
       tagInfos: [] as Array<TagInfo>
     })
-    const tagEditState = reactive({
-      modal: false,
+    const tagEditDeleteState = reactive({
+      editModal: false,
+      deleteModal: false,
       tagId: '',
       tagName: '',
+      tagNumber: 0,
     })
 
     const filteredTagInfos = computed(() => {
-      if (searchString.value === '') {
+      if (!searchString.value || searchString.value === '') {
         return  tagInfosState.tagInfos
       } else {
         return tagInfosState.tagInfos.filter(tagInfo => tagInfo.name.includes(searchString.value))
@@ -77,12 +89,21 @@ export default defineComponent({
     fetch()
 
     const openTagEditModal = ({ tagId, tagName }: { tagId: string, tagName: string }) => {
-      tagEditState.tagId = tagId
-      tagEditState.tagName = tagName
-      tagEditState.modal = true
+      tagEditDeleteState.tagId = tagId
+      tagEditDeleteState.tagName = tagName
+      tagEditDeleteState.editModal = true
     }
 
-    const competeTagUpdate = async () => {
+    const openTagDeleteModal = (
+      { tagId, tagName, tagNumber }: { tagId: string, tagName: string, tagNumber: number }
+    ) => {
+      tagEditDeleteState.tagId = tagId
+      tagEditDeleteState.tagName = tagName
+      tagEditDeleteState.tagNumber = tagNumber
+      tagEditDeleteState.deleteModal = true
+    }
+
+    const refreshTagList = async () => {
       const result = await getTagInfoListApi(userId.value)
       tagInfosState.tagInfos = result.tagInfos
     }
@@ -93,9 +114,10 @@ export default defineComponent({
       filteredTagInfos,
       noTagInfos,
       ...toRefs(tagInfosState),
-      ...toRefs(tagEditState),
+      ...toRefs(tagEditDeleteState),
       openTagEditModal,
-      competeTagUpdate,
+      openTagDeleteModal,
+      refreshTagList,
     }
   },
   head: {},

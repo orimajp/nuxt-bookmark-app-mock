@@ -29,7 +29,7 @@ interface BookmarkTag {
 }
 
 let bookmarkList: Array<BookmarkData> = []
-const tagList: Array<TagData> = []
+let tagList: Array<TagData> = []
 let bookmarkTagList: Array<BookmarkTag> = []
 
 tagList.push(
@@ -278,6 +278,11 @@ export const useDummyStore = () => {
     return true
   }
 
+  const deleteTag = (deleteTagId: string, userId: string) => {
+    tagList = tagList.filter(tag => !(tag.id === deleteTagId && tag.userId === userId))
+    bookmarkTagList = bookmarkTagList
+      .filter(bookmarkTag => !(bookmarkTag.tagId === deleteTagId && bookmarkTag.userId === userId))
+  }
 
   // ここからプライベートメソッド
   const getTags = (bookmarkId: string): Array<[string, string]> => {
@@ -344,5 +349,6 @@ export const useDummyStore = () => {
     updateBookmark,
     deleteBookmark,
     updateTag,
+    deleteTag,
   }
 }
