@@ -12,7 +12,8 @@ export default defineComponent({
       return router.replace('/')
     }
     const redirectPath = '/' + param
-    router.replace(redirectPath)
+//    router.replace(redirectPath)
+    alert(`param=${param}, redirectPath=${redirectPath}`)
   }
 })
 </script>
