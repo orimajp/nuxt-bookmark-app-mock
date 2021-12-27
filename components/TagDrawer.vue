@@ -17,29 +17,35 @@
       dense
       nav
     >
-      <v-list-item
+      <template
         v-for='tagLink in tagLinks'
-        :key='tagLink.name'
-        class='list-item-content'
       >
-        <v-list-item-icon
-          style="margin-right: 3px;"
+        <v-list-item
+          :key='tagLink.name'
+          class='list-item-content'
         >
-          <v-icon
-            small
-            v-text="tagLink.icon"
-          />
-        </v-list-item-icon>
-        <v-list-item-content
-          @click='addTag(tagLink.tag)'
-        >
-          <v-list-item-title
-            class='item-link'
+          <v-list-item-icon
+            style="margin-right: 3px;"
           >
-            {{ tagLink.name }} ({{ tagLink.count }})
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+            <v-icon
+              small
+              v-text="tagLink.icon"
+            />
+          </v-list-item-icon>
+          <v-list-item-content
+            @click='addTag(tagLink.tag)'
+          >
+            <v-list-item-title
+              class='item-link'
+            >
+              {{ tagLink.name }} ({{ tagLink.count }})
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider
+          v-if="tagLink.tag === ''"
+        />
+      </template>
     </v-list>
 
     <template #append>
@@ -111,7 +117,7 @@ export default defineComponent({
       () => [filteredTags.value , prop.searchingTags],
       ([newFilteredTags, newSearchingTags]) => {
         const tags: Array<TagLink> = [{
-          name: 'タグ指定無し',
+          name: '全表示',
           tag: '',
           icon: newSearchingTags.length
             ? 'mdi-checkbox-blank-circle' : 'mdi-checkbox-marked-circle',
